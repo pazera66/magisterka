@@ -34,7 +34,7 @@ public class Main extends Application {
     private Server createServer(){
         return new Server(55555, data -> {
             Platform.runLater(() -> {
-                //something
+                //somethingToCommit
             });
         });
     }
