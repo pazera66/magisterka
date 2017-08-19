@@ -9,14 +9,15 @@ import java.util.function.Consumer;
 
 public abstract class NetworkConnection {
 
-    private Consumer<Serializable> onReceiveCallback;
+    private Consumer<byte[]> onReceiveCallback;
     private ConnectionThread connThread = new ConnectionThread();
     protected abstract boolean isServer();
     protected abstract String getIP();
     protected abstract int getPort();
+    protected byte[] data;
 
 
-    public NetworkConnection(Consumer<Serializable> onReceiveCallback){
+    public NetworkConnection(Consumer<byte[]> onReceiveCallback){
         this.onReceiveCallback = onReceiveCallback;
         connThread.setDaemon(true);
     }
@@ -50,12 +51,12 @@ public abstract class NetworkConnection {
                 socket.setTcpNoDelay(true);
 
                 while(true){
-                    Serializable data = (Serializable) in.readObject();
+                    in.read(data);
                     onReceiveCallback.accept(data);
                 }
 
             } catch (Exception e){
-                onReceiveCallback.accept("Connection closed!");
+                onReceiveCallback.accept("Connection closed!".getBytes());
             }
         }
     }
