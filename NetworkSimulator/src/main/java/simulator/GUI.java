@@ -31,6 +31,6 @@ class GUI {
         scene = new Scene(hbox, 900, 900);
         stage = new Stage();
         stage.setScene(scene);
-        stage.show();
+        //stage.show();
     }
 }
