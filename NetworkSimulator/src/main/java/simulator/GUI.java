@@ -2,11 +2,16 @@ package simulator;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 class GUI {
 
     private Stage stage;
@@ -14,6 +19,7 @@ class GUI {
     private HBox hbox;
     private GridPane gridPane;
     private VBox vBox;
+    private Label label;
 
     GUI(){
         hbox = new HBox();
@@ -26,7 +32,10 @@ class GUI {
 
         vBox = new VBox();
 
-        hbox.getChildren().addAll(gridPane,vBox);
+        label = new Label();
+        label.setText("AAAAAAAAAAAAAAAAAAAAA");
+
+        hbox.getChildren().addAll(gridPane,vBox,label);
 
         scene = new Scene(hbox, 900, 900);
         stage = new Stage();
