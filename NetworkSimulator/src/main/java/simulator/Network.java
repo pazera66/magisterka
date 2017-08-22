@@ -22,7 +22,7 @@ public class Network {
         return sourceBitrate / 1000;
     }
 
-    void addDataTransfer(int source, int dest, List<DataPackage> payload){
+    void addDataTransfer(int source, int dest, List<Frame> payload){
         dataTransfers.add(new DataTransfer(source, dest, payload, dataPackageSize));
     }
 

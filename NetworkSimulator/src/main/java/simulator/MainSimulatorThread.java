@@ -74,7 +74,7 @@ public class MainSimulatorThread extends Thread {
 
             network.clearNetwork();
 
-
+            System.out.println(i);
         }
     }
 

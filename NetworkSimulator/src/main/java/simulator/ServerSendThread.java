@@ -19,8 +19,8 @@ public class ServerSendThread extends Thread {
 
     @Override
     public void run(){
-        List<DataPackage> payload = new LinkedList<>();
-        payload.add(new DataPackage(dataPackagesGenerated));
+        List<Frame> payload = new LinkedList<>();
+        //payload.add(new Frame(dataPackagesGenerated));
         network.addDataTransfer(serverId, nodeId, payload);
     }
 }
