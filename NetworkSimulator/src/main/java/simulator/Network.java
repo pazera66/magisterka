@@ -13,17 +13,21 @@ class Network {
 
     private int dataPackageSize;
 
-    Network(int sourceBitrate){
+    Network(){
         dataTransfers = new LinkedList<>();
-        dataPackageSize = calculateDataPackageSize(sourceBitrate);
+        dataPackageSize = calculateDataPackageSize();
     }
 
-    private int calculateDataPackageSize(int sourceBitrate) {
-        return sourceBitrate / 1000;
+    private int calculateDataPackageSize() {
+        return Settings.getSource_Bitrate() / Settings.getSamplingFrequency();
     }
 
     void addDataTransfer(int source, int dest, List<DataPackage> payload){
         dataTransfers.add(new DataTransfer(source, dest, payload, dataPackageSize));
+    }
+
+    void addDataTransfer(int source, int dest, List<Integer> payload, String request){
+        dataTransfers.add(new DataTransfer(source, dest, payload, request));
     }
 
     void clearNetwork(){

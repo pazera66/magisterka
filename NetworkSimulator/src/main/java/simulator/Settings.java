@@ -9,7 +9,7 @@ import lombok.Getter;
     private static final int source_Bitrate = 8388000;
     private static final int server_Upload_Bandwidth = 1000000000;
     private static final int serverID = 9999;
-    private static final int number_Of_Cycles = 600000;
+    private static final int number_Of_Cycles = 60000;
     private static final int FPS = 50;
     private static final int samplingFrequency = 1000;
 
@@ -44,4 +44,6 @@ import lombok.Getter;
      static int getSamplingFrequency() {
         return samplingFrequency;
     }
+
+
 }
