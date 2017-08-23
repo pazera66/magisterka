@@ -12,7 +12,7 @@ public class MainSimulatorThread extends Thread {
     private final int SOURCE_BITRATE = 8388000; // number of bits per second
     private final int SERVER_UPLOAD_BANDWIDTH = 1000000000;
     private final static int serverId = 9999;
-    private final int numberOfCycles = 10000;
+    private final int numberOfCycles = 600000;
     private final int samplingFrequency = 1000; // how many times per simulated second calculations are done
 
     private Server server;
@@ -48,14 +48,14 @@ public class MainSimulatorThread extends Thread {
         server = new Server(serverId, SOURCE_BITRATE, SERVER_UPLOAD_BANDWIDTH, nodes, network, samplingFrequency);
         initializeNodesArray();
 
-        Date d = new Date();
-
-        System.out.println(d.toString());
+        StopWatch watch = new StopWatch();
+        watch.start();
 
         runSimulation();
+
         System.out.println("Done");
-        d = new Date();
-        System.out.println(d.toString());
+        watch.stop();
+        System.out.println(watch.toString());
     }
 
     private void initializeNodesArray() {

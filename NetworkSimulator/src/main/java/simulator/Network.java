@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class Network {
+class Network {
 
     @Getter
     private List<DataTransfer> dataTransfers;
@@ -22,11 +22,11 @@ public class Network {
         return sourceBitrate / 1000;
     }
 
-    void addDataTransfer(int source, int dest, List<Frame> payload){
+    void addDataTransfer(int source, int dest, List<DataPackage> payload){
         dataTransfers.add(new DataTransfer(source, dest, payload, dataPackageSize));
     }
 
-    public void clearNetwork(){
+    void clearNetwork(){
         dataTransfers.clear();
     }
 }

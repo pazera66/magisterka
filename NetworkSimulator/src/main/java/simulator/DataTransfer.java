@@ -10,11 +10,11 @@ import java.util.List;
 class DataTransfer {
     private int sourceNodeId;
     private int destNodeId;
-    private List<Frame> payload;
+    private List<DataPackage> payload;
     private int dataPackageSize;
     private int size;
 
-    DataTransfer(int sourceNodeId, int destNodeId, List<Frame> payload, int dataPackageSize){
+    DataTransfer(int sourceNodeId, int destNodeId, List<DataPackage> payload, int dataPackageSize){
         this.sourceNodeId = sourceNodeId;
         this.destNodeId = destNodeId;
         this.payload = payload;
