@@ -11,23 +11,20 @@ class Network {
     @Getter
     private List<DataTransfer> dataTransfers;
 
-    private int dataPackageSize;
-
     Network(){
         dataTransfers = new LinkedList<>();
-        dataPackageSize = calculateDataPackageSize();
     }
 
-    private int calculateDataPackageSize() {
-        return Settings.getSource_Bitrate() / Settings.getSamplingFrequency();
-    }
-
-    void addDataTransfer(int source, int dest, List<DataPackage> payload){
+    void addDataTransfer(int source, int dest, List<DataPackage> payload, int dataPackageSize){
         dataTransfers.add(new DataTransfer(source, dest, payload, dataPackageSize));
     }
 
-    void addDataTransfer(int source, int dest, List<Integer> payload, String request){
+    void addDataTransfer(int source, int dest, List<Integer> payload, Settings.Requests request){
         dataTransfers.add(new DataTransfer(source, dest, payload, request));
+    }
+
+    void addDataTransfer(DataTransfer transfer){
+        dataTransfers.add(transfer);
     }
 
     void clearNetwork(){

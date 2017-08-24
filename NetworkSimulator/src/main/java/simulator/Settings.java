@@ -1,8 +1,5 @@
 package simulator;
 
-import lombok.Getter;
-
-@Getter
  class Settings {
 
     private static final int number_Of_Clients = 100;
@@ -13,6 +10,17 @@ import lombok.Getter;
     private static final int FPS = 50;
     private static final int samplingFrequency = 1000;
 
+
+    public enum Requests {
+        RequestingListOfNodes,
+        SendingListOfNodes,
+        RequestingForListOfStoredFrames,
+        SendingListOfStoredFrames,
+        RequestingSpecificFrames,
+        SendingSpecificFrames
+
+    }
+
     static int getNumberOfFrameParts(){
         return samplingFrequency / FPS;
     }
@@ -21,27 +29,27 @@ import lombok.Getter;
         return number_Of_Clients;
     }
 
-     static int getSource_Bitrate() {
+    static int getSource_Bitrate() {
         return source_Bitrate;
     }
 
-     static int getServer_Upload_Bandwidth() {
+    static int getServer_Upload_Bandwidth() {
         return server_Upload_Bandwidth;
     }
 
-     static int getServerID() {
+    static int getServerID() {
         return serverID;
     }
 
-     static int getNumber_Of_Cycles() {
+    static int getNumber_Of_Cycles() {
         return number_Of_Cycles;
     }
 
-     static int getFPS() {
+    static int getFPS() {
         return FPS;
     }
 
-     static int getSamplingFrequency() {
+    static int getSamplingFrequency() {
         return samplingFrequency;
     }
 
