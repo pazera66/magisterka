@@ -22,6 +22,7 @@ class Client {
     private Network network;
     private int samplingFrequency = Settings.getSamplingFrequency();
     private List<Integer> listOfNodes = new ArrayList<>();
+    private Map<Integer, Integer> neighbours = new HashMap<>();
 
     private List<DataPackage> networkBuffer = new ArrayList<>();
     private List<DataTransfer> outgoingNetworkBuffer = new ArrayList<>();
@@ -49,7 +50,7 @@ class Client {
         frameSize = dataPackageSize * getNumberOfFrameParts();
     }
 
-    void receive() {
+    void receive(int cycle) {
         int remainingDownloadBandwidth = downloadBandwidth / samplingFrequency;
         List<DataTransfer> incomingData = network.getDataTransfers().stream().filter(x -> x.getDestNodeId() == id).collect(Collectors.toList());
 
@@ -171,10 +172,10 @@ class Client {
         }
     }
 
-    void send() {
+    void send(int cycle) {
         if (listOfNodes.isEmpty()) {
             requestListOfNodesFromServer();
-            return;
+            //return;
         }
 
         for (DataTransfer transfer:outgoingRequests){

@@ -9,6 +9,7 @@ package simulator;
     private static final int number_Of_Cycles = 60000;
     private static final int FPS = 50;
     private static final int samplingFrequency = 1000;
+    private static final int globalLatency = 100;
 
 
     public enum Requests {
@@ -53,5 +54,5 @@ package simulator;
         return samplingFrequency;
     }
 
-
+    static int getGlobalLatency(){return globalLatency;}
 }

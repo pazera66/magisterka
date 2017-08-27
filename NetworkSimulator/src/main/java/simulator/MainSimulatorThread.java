@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MainSimulatorThread extends Thread {
 
-    private final int numberOfCycles = 60000;
+    private final int numberOfCycles = 600000;
 
     private Server server;
     private List<Client> nodes = new LinkedList<>();
@@ -34,10 +34,12 @@ public class MainSimulatorThread extends Thread {
     }
 
     private void startSimulation(){
-        for (int i = 0; i < NUMBER_OF_NODES; i++){
+        for (int i = 0; i < NUMBER_OF_NODES; i++) {
             nodes.add(new Client(i, 10000000, 10000000, 3, network));
+            network.addHost(i);
         }
         server = new Server(nodes, network);
+        network.addHost(server.getServerId());
 
         StopWatch watch = new StopWatch();
         watch.start();
@@ -52,29 +54,30 @@ public class MainSimulatorThread extends Thread {
     private void runSimulation() {
 
         for (int i = 0; i < numberOfCycles; i++){
-            performSendCycle();
-            performReceiveCycle();
+            network.updateNetwork();
+            performSendCycle(i);
+            performReceiveCycle(i);
             network.clearNetwork();
             System.out.println(i);
         }
     }
 
-    private void performSendCycle() {
-        server.send();
+    private void performSendCycle(int cycle) {
+        server.send(cycle);
 
         for (Client node:nodes){
-            node.send();
+            node.send(cycle);
         }
 
     }
 
-    private void performReceiveCycle() {
+    private void performReceiveCycle(int cycle) {
         stopWatch.reset();
         stopWatch.start();
 
-        server.receive();
+        server.receive(cycle);
         for (Client node:nodes) {
-            node.receive();
+            node.receive(cycle);
         }
 
         stopWatch.stop();

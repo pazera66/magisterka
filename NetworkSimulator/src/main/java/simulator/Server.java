@@ -44,7 +44,7 @@ class Server {
         numberOfFrameParts = samplingFrequency / FPS;
     }
 
-    void send(){
+    void send(int cycle){
         int remainingBandwidth = uploadBandwidth / samplingFrequency;
 
         for (int nodeId:connectedNodes){
@@ -67,7 +67,7 @@ class Server {
          framePartBeingStreamed++;
     }
 
-    void receive(){
+    void receive(int cycle){
         List<DataTransfer> incomingData = network.getDataTransfers()
                 .stream()
                 .filter(x -> x.getDestNodeId() == serverId)
