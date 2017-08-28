@@ -11,6 +11,7 @@ class Network {
     private List<DataTransfer> dataTransfers;
     private Map<Integer, List<DataTransfer>> bufferedDataTransfers = new HashMap<>();
 
+    @Getter
     private Map<Integer, Host> hosts = new HashMap<>();
 
     private int counter = 0; //cycle counter, act as timer for latency calculation
@@ -29,7 +30,7 @@ class Network {
         addDataTransferToBuffer(transfer);
     }
 
-    void addDataTransferToBuffer(DataTransfer transfer) {
+    private void addDataTransferToBuffer(DataTransfer transfer) {
         int latency = hosts.get(transfer.getSourceNodeId()).getLatency(transfer.getDestNodeId());
         if (!bufferedDataTransfers.containsKey(counter+latency)){
             List<DataTransfer> list = new ArrayList<>();
@@ -78,19 +79,19 @@ class Network {
         }
     }
 
-    private void removeHostRelationshipFromAllHosts(int hostID) {
+    void removeHostRelationshipFromAllHosts(int hostID) {
         for (Map.Entry<Integer, Host> entry:hosts.entrySet()){
             entry.getValue().removeNeighbour(hostID);
         }
     }
 
-    private void createHostRelationship(int hostID, int neighbourID, int latency) {
+    void createHostRelationship(int hostID, int neighbourID, int latency) {
         Host host = hosts.get(hostID);
         host.addNeighbour(neighbourID, latency);
         hosts.put(hostID, host);
     }
 
-    private void updateHostRelationship(int hostID, int neighbourID, int latency) {
+    void updateHostRelationship(int hostID, int neighbourID, int latency) {
         Host host = hosts.get(hostID);
         host.changeLatency(neighbourID, latency);
         hosts.put(hostID, host);

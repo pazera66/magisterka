@@ -12,7 +12,6 @@ class DataTransfer {
     private int destNodeId;
     private List<DataPackage> payload;
     private List<Integer> requestPayload;
-    private int dataPackageSize;
     private int size;
     private Settings.Requests request;
 
@@ -20,7 +19,7 @@ class DataTransfer {
         this.sourceNodeId = sourceNodeId;
         this.destNodeId = destNodeId;
         this.payload = payload;
-        this.dataPackageSize = dataPackageSize;
+        this.size = dataPackageSize;
     }
 
     DataTransfer(int sourceNodeId, int destNodeId, List<Integer> payload, Settings.Requests request){

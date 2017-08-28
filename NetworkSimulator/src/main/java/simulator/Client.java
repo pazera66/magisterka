@@ -13,6 +13,7 @@ import static simulator.Settings.*;
 class Client {
 
     private final int FPS = 50;
+    private int cycle = 0;
 
     private int id;
     private int uploadBandwidth;
@@ -21,8 +22,13 @@ class Client {
     private int minimalForwardBufferInSeconds;
     private Network network;
     private int samplingFrequency = Settings.getSamplingFrequency();
+
     private List<Integer> listOfNodes = new ArrayList<>();
     private Map<Integer, Integer> neighbours = new HashMap<>();
+    private Map<String, Integer> timers = new HashMap<>();
+    private Map<Integer, Integer> listOfNodesWithLatencies = new HashMap<>();
+    private Map<Integer, List<Integer>> listOfNodesWithFrames = new HashMap<>();
+    private List<Integer> listOfBestNodes = new ArrayList<>();
 
     private List<DataPackage> networkBuffer = new ArrayList<>();
     private List<DataTransfer> outgoingNetworkBuffer = new ArrayList<>();
@@ -48,6 +54,7 @@ class Client {
         this.network = network;
         dataPackageSize = playbackBitrate / samplingFrequency;
         frameSize = dataPackageSize * getNumberOfFrameParts();
+        timers.put("ListOfNodes_Timer", 0);
     }
 
     void receive(int cycle) {
@@ -55,7 +62,7 @@ class Client {
         List<DataTransfer> incomingData = network.getDataTransfers().stream().filter(x -> x.getDestNodeId() == id).collect(Collectors.toList());
 
         for (DataTransfer dataTransfer:incomingData){
-            if (dataTransfer.getSize() < remainingDownloadBandwidth){
+            if (dataTransfer.getSize() < remainingDownloadBandwidth && dataTransfer.getSize() != 0){
                 networkBuffer.addAll(dataTransfer.getPayload());
                 remainingDownloadBandwidth = remainingDownloadBandwidth - dataTransfer.getSize();
             } else if (dataTransfer.getRequest() != null){
@@ -168,19 +175,25 @@ class Client {
                 case SendingSpecificFrames:
                     sendSpecificFrames(transfer.getSourceNodeId(), transfer.getRequestPayload());
                     break;
+                default:
+                    System.out.println("Unknown request");
             }
         }
+
+        incomingRequests.clear();
     }
 
     void send(int cycle) {
-        if (listOfNodes.isEmpty()) {
+        this.cycle = cycle;
+        if (listOfNodes.isEmpty() || timers.get("ListOfNodes_Timer") == cycle) {
             requestListOfNodesFromServer();
-            //return;
+            timers.put("ListOfNodes_Timer", cycle + 10000);
         }
 
         for (DataTransfer transfer:outgoingRequests){
             network.addDataTransfer(transfer);
         }
+        outgoingRequests.clear();
 
         int remainingUploadBandwidth = uploadBandwidth / samplingFrequency;
         for (DataTransfer transfer:outgoingNetworkBuffer){
@@ -223,10 +236,23 @@ class Client {
         Collections.sort(frameStorage);
     }
 
-    private void gatherLatencyStats(){}
-
     private void updateNodeTree() {
-
+        for (Integer nodeId:listOfNodes) {
+            if (nodeId == id) continue;
+            listOfNodesWithLatencies.put(nodeId, getLatency(nodeId));
+        }
+        setBestNodes();
     }
 
+    private int getLatency(int destNodeId){
+        return network.getHosts().get(id).getLatency(destNodeId);
+    }
+
+    private void setBestNodes() {
+        listOfBestNodes = listOfNodesWithLatencies.entrySet()
+                .stream()
+                .sorted(Comparator.comparing(Map.Entry::getValue))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
 }
