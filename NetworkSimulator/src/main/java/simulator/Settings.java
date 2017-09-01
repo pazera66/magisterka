@@ -10,7 +10,7 @@ package simulator;
     private static final int FPS = 50;
     private static final int samplingFrequency = 1000;
     private static final int globalLatency = 100;
-    private static final int chunkSize = 10;
+    private static final int ChunksPerSecond = 10;
 
 
     public enum Requests {
@@ -62,7 +62,7 @@ package simulator;
 
     static int getGlobalLatency(){return globalLatency;}
 
-     public static int getChunkSize() {
-         return chunkSize;
+     public static int getChunksPerSecond() {
+         return ChunksPerSecond;
      }
  }

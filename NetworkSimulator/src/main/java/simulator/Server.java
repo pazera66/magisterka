@@ -26,7 +26,7 @@ class Server {
 
     private List<Integer> allNodesInNetwork;
     private Network network;
-    private int chunkBeingStreamed = 0;
+    private int latestGeneratedChunk = 0;
     private int countdownBetweenChunkGeneration = 0;
 
     private int chunkSize;
@@ -38,7 +38,7 @@ class Server {
     }
 
     private void calculateChunkSize() {
-        chunkSize = sourceBitrate / Settings.getChunkSize();
+        chunkSize = sourceBitrate / Settings.getChunksPerSecond();
     }
 
     void send(int cycle){
@@ -50,18 +50,18 @@ class Server {
                 break;
             }
 
-            if (!(chunkBeingStreamed < numberOfChunksPerSecond)) {
+            if (!(latestGeneratedChunk < numberOfChunksPerSecond)) {
                 frameBeingStreamed++;
-                chunkBeingStreamed = 0;
+                latestGeneratedChunk = 0;
             }
 
             List<DataPackage> payload = new LinkedList<>();
-            payload.add(new DataPackage(chunkBeingStreamed, frameBeingStreamed));
+            payload.add(new DataPackage(latestGeneratedChunk, frameBeingStreamed));
             network.addDataTransfer(serverId, nodeId, payload, chunkSize);
             remainingBandwidth = remainingBandwidth - chunkSize;
         }
 
-         chunkBeingStreamed++;
+         latestGeneratedChunk++;
     }
 
     void receive(int cycle){
