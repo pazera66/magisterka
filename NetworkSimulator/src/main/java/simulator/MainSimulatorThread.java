@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MainSimulatorThread extends Thread {
 
-    private final int numberOfCycles = 60000;
+    private final int numberOfCycles = 600000;
 
     private Server server;
     private List<Client> nodes = new LinkedList<>();
