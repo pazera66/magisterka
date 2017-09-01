@@ -34,7 +34,7 @@ class Client {
     private List<DataTransfer> outgoingNetworkBuffer = new ArrayList<>();
     private List<Frame> incompleteFrameBuffer = new ArrayList<>();
     private List<Frame> playbackBuffer = new ArrayList<>();
-    private List<Integer> frameStorage = new ArrayList<>();
+    private Map<String, Integer> frameStorage = new ArrayList<>();
     private List<DataTransfer> incomingRequests = new ArrayList<>();
     private List<DataTransfer> outgoingRequests = new ArrayList<>();
 
@@ -89,9 +89,9 @@ class Client {
             int frameIndex = getIncompleteFrameIndex(dataPackage.getFrameNumber());
 
             if (frameIndex == -1){
-                incompleteFrameBuffer.add(new Frame(dataPackage.getFrameNumber(), dataPackage.getFramePartNumber()));
+                incompleteFrameBuffer.add(new Frame(dataPackage.getFrameNumber(), dataPackage.getChunkID()));
             } else {
-                incompleteFrameBuffer.get(frameIndex).addPart(dataPackage.getFramePartNumber());
+                incompleteFrameBuffer.get(frameIndex).addPart(dataPackage.getChunkID());
             }
         }
         networkBuffer.clear();
@@ -159,21 +159,21 @@ class Client {
     private void processRequests() {
         for (DataTransfer transfer: incomingRequests){
             switch (transfer.getRequest()){
-                case SendingListOfNodes:
-                    listOfNodes = transfer.getRequestPayload();
+                case SendingListOfAllNodes:
+                    listOfNodes = (List<Integer>) transfer.getRequestOptions().get(Options.ListOfAllNodes);
                     updateNodeTree();
                     break;
                 case RequestingForListOfStoredFrames:
                     sendListOfStoredFrames(transfer.getSourceNodeId());
                     break;
                 case SendingListOfStoredFrames:
-                    saveReceivedFrames(transfer.getRequestPayload());
+                    saveReceivedFrames(transfer.getRequestOptions());
                     break;
                 case RequestingSpecificFrames:
                     requestSpecificFrames(transfer.getSourceNodeId());
                     break;
                 case SendingSpecificFrames:
-                    sendSpecificFrames(transfer.getSourceNodeId(), transfer.getRequestPayload());
+                    sendSpecificFrames(transfer.getSourceNodeId(), transfer.getRequestOptions());
                     break;
                 default:
                     System.out.println("Unknown request");

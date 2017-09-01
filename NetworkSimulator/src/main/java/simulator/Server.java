@@ -3,8 +3,10 @@ package simulator;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -20,51 +22,46 @@ class Server {
     private int sourceBitrate = getSource_Bitrate();
     private int uploadBandwidth = getServer_Upload_Bandwidth();
     private int samplingFrequency = Settings.getSamplingFrequency();
-    private int numberOfFrameParts = Settings.getNumberOfFrameParts();
+    private int numberOfChunksPerSecond = Settings.getNumberOfFrameParts();
 
-    private List<Integer> connectedNodes;
+    private List<Integer> allNodesInNetwork;
     private Network network;
-    private int framePartBeingStreamed = 0;
-    private int frameBeingStreamed = 0;
+    private int latestGeneratedChunk = 0;
+    private int countdownBetweenChunkGeneration = 0;
 
-    private int dataPackageSize;
+    private int chunkSize;
 
-    Server(List<Client> connectedNodes, Network network){
-        this.connectedNodes = connectedNodes.stream().map(Client::getId).collect(toList());
+    Server(List<Client> allNodesInNetwork, Network network){
+        this.allNodesInNetwork = allNodesInNetwork.stream().map(Client::getId).collect(toList());
         this.network = network;
-        calculateDataPackageSize();
-        calculateHowManyPartsPerFrame();
+        calculateChunkSize();
     }
 
-    private void calculateDataPackageSize() {
-        dataPackageSize = sourceBitrate / samplingFrequency;
-    }
-
-    private void calculateHowManyPartsPerFrame() {
-        numberOfFrameParts = samplingFrequency / FPS;
+    private void calculateChunkSize() {
+        chunkSize = sourceBitrate / Settings.getChunksPerSecond();
     }
 
     void send(int cycle){
         int remainingBandwidth = uploadBandwidth / samplingFrequency;
 
-        for (int nodeId:connectedNodes){
-            if (remainingBandwidth < dataPackageSize){
+        for (int nodeId: allNodesInNetwork){
+            if (remainingBandwidth < chunkSize){
                 System.out.println("Not enough server bandwidth to handle all nodes");
                 break;
             }
 
-            if (!(framePartBeingStreamed < numberOfFrameParts)) {
+            if (!(latestGeneratedChunk < numberOfChunksPerSecond)) {
                 frameBeingStreamed++;
-                framePartBeingStreamed = 0;
+                latestGeneratedChunk = 0;
             }
 
             List<DataPackage> payload = new LinkedList<>();
-            payload.add(new DataPackage(framePartBeingStreamed, frameBeingStreamed));
-            network.addDataTransfer(serverId, nodeId, payload, dataPackageSize);
-            remainingBandwidth = remainingBandwidth - dataPackageSize;
+            payload.add(new DataPackage(latestGeneratedChunk, frameBeingStreamed));
+            network.addDataTransfer(serverId, nodeId, payload, chunkSize);
+            remainingBandwidth = remainingBandwidth - chunkSize;
         }
 
-         framePartBeingStreamed++;
+         latestGeneratedChunk++;
     }
 
     void receive(int cycle){
@@ -76,7 +73,9 @@ class Server {
         for (DataTransfer data:incomingData){
             switch (data.getRequest()){
                 case RequestingListOfNodes:
-                    network.addDataTransfer(serverId, data.getSourceNodeId(), connectedNodes, Requests.SendingListOfNodes);
+                    Map<Options, Object> map = new HashMap<>();
+                    map.put(Options.ListOfAllNodes, allNodesInNetwork);
+                    network.addDataTransfer(serverId, data.getSourceNodeId(), map, Requests.SendingListOfAllNodes);
             }
         }
     }

@@ -10,16 +10,22 @@ package simulator;
     private static final int FPS = 50;
     private static final int samplingFrequency = 1000;
     private static final int globalLatency = 100;
+    private static final int ChunksPerSecond = 10;
 
 
     public enum Requests {
         RequestingListOfNodes,
-        SendingListOfNodes,
+        SendingListOfAllNodes,
         RequestingForListOfStoredFrames,
         SendingListOfStoredFrames,
         RequestingSpecificFrames,
         SendingSpecificFrames
 
+    }
+
+    public enum Options {
+        Requested_ChunkID,
+        ListOfAllNodes
     }
 
     static int getNumberOfFrameParts(){
@@ -55,4 +61,8 @@ package simulator;
     }
 
     static int getGlobalLatency(){return globalLatency;}
-}
+
+     public static int getChunksPerSecond() {
+         return ChunksPerSecond;
+     }
+ }

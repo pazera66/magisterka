@@ -1,7 +1,6 @@
 package simulator;
 
 import com.sun.istack.internal.Nullable;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,15 +8,17 @@ import lombok.Setter;
 @Setter
 class DataPackage {
 
-    private int framePartNumber;
-    private int frameNumber;
+    private int chunkID;
+    private int chunkPart;
+    private int totalChunkPartNumber;
 
-    DataPackage(@Nullable int framePartNumber, int frameNumber){
-        this.framePartNumber = framePartNumber;
-        this.frameNumber = frameNumber;
+    DataPackage(int chunkID){
+        this.chunkID = chunkID;
     }
 
-    DataPackage(int frameNumberme) {
-        this.frameNumber = frameNumberme;
+    DataPackage(int chunkID, int part, int totalChunkPartsNumber){
+        this.chunkID = chunkID;
+        this.chunkPart = chunkPart;
+        this.totalChunkPartNumber = totalChunkPartsNumber;
     }
 }

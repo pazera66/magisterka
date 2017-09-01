@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 @Setter
 @Getter
@@ -11,22 +12,25 @@ class DataTransfer {
     private int sourceNodeId;
     private int destNodeId;
     private List<DataPackage> payload;
-    private List<Integer> requestPayload;
+    private Map<Settings.Options, Object> requestOptions;
     private int size;
     private Settings.Requests request;
+    private boolean isRequest;
 
-    DataTransfer(int sourceNodeId, int destNodeId, List<DataPackage> payload, int dataPackageSize){
+    DataTransfer(int sourceNodeId, int destNodeId, List<DataPackage> payload, int transferSize){
         this.sourceNodeId = sourceNodeId;
         this.destNodeId = destNodeId;
         this.payload = payload;
-        this.size = dataPackageSize;
+        this.size = transferSize;
+        isRequest = false;
     }
 
-    DataTransfer(int sourceNodeId, int destNodeId, List<Integer> payload, Settings.Requests request){
+    DataTransfer(int sourceNodeId, int destNodeId, Map<Settings.Options, Object> requestOptions, Settings.Requests request){
         this.sourceNodeId = sourceNodeId;
         this.destNodeId = destNodeId;
-        this.requestPayload = payload;
+        this.requestOptions = requestOptions;
         this.request = request;
         size = 0;
+        isRequest = true;
     }
 }

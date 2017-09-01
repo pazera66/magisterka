@@ -20,12 +20,12 @@ class Network {
         dataTransfers = new LinkedList<>();
     }
 
-    void addDataTransfer(int source, int dest, List<DataPackage> payload, int dataPackageSize){
-        DataTransfer transfer = new DataTransfer(source, dest, payload, dataPackageSize);
+    void addDataTransfer(int source, int dest, List<DataPackage> payload, int transferSize){
+        DataTransfer transfer = new DataTransfer(source, dest, payload, transferSize);
         addDataTransferToBuffer(transfer);
     }
 
-    void addDataTransfer(int source, int dest, List<Integer> payload, Settings.Requests request){
+    void addDataTransfer(int source, int dest, Map<Settings.Options, Object> payload, Settings.Requests request){
         DataTransfer transfer = new DataTransfer(source, dest, payload, request);
         addDataTransferToBuffer(transfer);
     }
